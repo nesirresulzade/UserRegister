@@ -1,211 +1,157 @@
-import { useState } from 'react';
+import React, { useState } from "react";
 
 const RegisterForm = ({ onSuccess }) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        surname: '',
-        email: '',
-        gender: '',
-        city: '',
-        phone: '',
-        photo: null,
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    gender: "",
+    city: "",
+    phone: "",
+    photo: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "photo") {
+      setFormData((prev) => ({ ...prev, photo: files[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const avatarUrl = formData.photo
+      ? URL.createObjectURL(formData.photo)
+      : "https://via.placeholder.com/100";
+
+    const newUser = {
+      firstName: formData.name,
+      lastName: formData.surname,
+      email: formData.email,
+      gender: formData.gender,
+      address: formData.city,
+      phone: formData.phone,
+      avatar: avatarUrl,
+    };
+
+    onSuccess(newUser);
+
+    setFormData({
+      name: "",
+      surname: "",
+      email: "",
+      gender: "",
+      city: "",
+      phone: "",
+      photo: null,
     });
+  };
 
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === 'photo') {
-            setFormData(prev => ({ ...prev, photo: files[0] }));
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
-        onSuccess();
-    };
-
-    return (
-        <form
-            onSubmit={handleSubmit}
-            className="
-        bg-white 
-        shadow-md 
-        rounded-lg 
-        p-5 
-        max-w-lg 
-        w-full 
-        mx-auto 
-        space-y-4 
-        max-h-[calc(100vh-80px)] 
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="
+        bg-white
+        shadow-xl
+        rounded-2xl
+        p-6
+        w-full
+        max-w-[500px]
+        mx-auto
+        space-y-6
+        max-h-[90vh]
         overflow-y-auto
-        transition-transform 
-        duration-300 
-        transform 
-        hover:scale-102 
-        hover:shadow-lg
+        scrollbar-thin
+        scrollbar-thumb-orange-400
+        scrollbar-track-gray-200
       "
-            style={{ minWidth: '300px' }}
-        >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Ad"
-                    onChange={handleChange}
-                    className="
-            w-full 
-            p-2.5 
-            border 
-            border-gray-300 
-            rounded 
-            focus:outline-none 
-            focus:ring-2 
-            focus:ring-orange-400 
-            focus:border-transparent 
-            transition
-          "
-                    required
-                />
-                <input
-                    type="text"
-                    name="surname"
-                    placeholder="Soyad"
-                    onChange={handleChange}
-                    className="
-            w-full 
-            p-2.5 
-            border 
-            border-gray-300 
-            rounded 
-            focus:outline-none 
-            focus:ring-2 
-            focus:ring-orange-400 
-            focus:border-transparent 
-            transition
-          "
-                    required
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Mail"
-                    onChange={handleChange}
-                    className="
-            w-full 
-            p-2.5 
-            border 
-            border-gray-300 
-            rounded 
-            focus:outline-none 
-            focus:ring-2 
-            focus:ring-orange-400 
-            focus:border-transparent 
-            transition
-          "
-                    required
-                />
-                <input
-                    type="text"
-                    name="gender"
-                    placeholder="Cins (M/F)"
-                    onChange={handleChange}
-                    className="
-            w-full 
-            p-2.5 
-            border 
-            border-gray-300 
-            rounded 
-            focus:outline-none 
-            focus:ring-2 
-            focus:ring-orange-400 
-            focus:border-transparent 
-            transition
-          "
-                    required
-                />
-                <input
-                    type="text"
-                    name="city"
-                    placeholder="Yaşayış yeri"
-                    onChange={handleChange}
-                    className="
-            w-full 
-            p-2.5 
-            border 
-            border-gray-300 
-            rounded 
-            focus:outline-none 
-            focus:ring-2 
-            focus:ring-orange-400 
-            focus:border-transparent 
-            transition
-          "
-                    required
-                />
-                <input
-                    type="text"
-                    name="phone"
-                    placeholder="Nömrə"
-                    onChange={handleChange}
-                    className="
-            w-full 
-            p-2.5 
-            border 
-            border-gray-300 
-            rounded 
-            focus:outline-none 
-            focus:ring-2 
-            focus:ring-orange-400 
-            focus:border-transparent 
-            transition
-          "
-                    required
-                />
-            </div>
+      style={{ boxSizing: "border-box" }}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          { name: "name", placeholder: "Ad" },
+          { name: "surname", placeholder: "Soyad" },
+          { name: "email", placeholder: "E-mail", type: "email" },
+          { name: "gender", placeholder: "Cins (M/F)" },
+          { name: "city", placeholder: "Yaşayış yeri" },
+          { name: "phone", placeholder: "Telefon nömrəsi" },
+        ].map(({ name, placeholder, type = "text" }) => (
+          <input
+            key={name}
+            type={type}
+            name={name}
+            placeholder={placeholder}
+            value={formData[name]}
+            onChange={handleChange}
+            required
+            className="
+              w-full
+              p-3
+              border
+              border-gray-300
+              rounded-lg
+              focus:outline-none
+              focus:ring-2
+              focus:ring-orange-400
+              focus:border-transparent
+              transition
+              placeholder-gray-400
+              text-gray-700
+              font-medium
+            "
+          />
+        ))}
+      </div>
 
-            <input
-                type="file"
-                name="photo"
-                accept="image/*"
-                onChange={handleChange}
-                className="
-          w-full 
-          border 
-          border-gray-300 
-          rounded 
-          p-2 
-          cursor-pointer 
-          focus:outline-none 
-          focus:ring-2 
-          focus:ring-orange-400 
+      <input
+        type="file"
+        name="photo"
+        accept="image/*"
+        onChange={handleChange}
+        className="
+          w-full
+          border
+          border-gray-300
+          rounded-lg
+          p-3
+          cursor-pointer
+          focus:outline-none
+          focus:ring-2
+          focus:ring-orange-400
           transition
+          text-gray-600
+          font-medium
         "
-            />
+      />
 
-            <button
-                type="submit"
-                className="
-          bg-orange-500 
-          hover:bg-orange-600 
-          text-white 
-          font-semibold 
-          py-2.5 
-          px-6 
-          rounded 
-          shadow 
-          w-full 
-          transition 
-          duration-300 
-          transform 
+      <button
+        type="submit"
+        className="
+          bg-gradient-to-r
+          from-orange-400
+          to-orange-600
+          text-white
+          font-semibold
+          py-3
+          rounded-lg
+          shadow-md
+          w-full
+          hover:from-orange-500
+          hover:to-orange-700
+          transition
+          duration-300
+          transform
           hover:scale-105
+          cursor-pointer
         "
-            >
-                Send
-            </button>
-        </form>
-    );
+      >
+        Göndər
+      </button>
+    </form>
+  );
 };
 
 export default RegisterForm;

@@ -1,29 +1,60 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../DataBase/Context';
 
 const Cards = ({ customers }) => {
+  const navigate = useNavigate();
+  const { setSelectedUser } = useContext(UserContext);
+
+  const handleCardClick = (user) => {
+    setSelectedUser(user);
+    navigate("/info-user");
+  };
+
   return (
-    <div className="flex space-x-6 overflow-x-auto py-6 px-4 max-w-full scrollbar-thin scrollbar-thumb-orange-400 scrollbar-track-gray-200">
+    <div className="flex flex-wrap gap-6 py-6 px-4 max-w-full">
       {customers.length === 0 ? (
         <p className="text-gray-500">No customers to display.</p>
       ) : (
         customers.map((customer) => (
           <div
             key={customer.id}
-            className="min-w-[280px] bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between hover:shadow-2xl transition-shadow duration-300"
+            onClick={() => handleCardClick(customer)}
+            className="
+              bg-white 
+              shadow-md 
+              rounded-2xl 
+              p-6 
+              flex 
+              flex-col 
+              items-center 
+              transition-transform 
+              duration-300 
+              transform 
+              hover:scale-105 
+              hover:shadow-xl 
+              cursor-pointer
+
+              w-full         // Kiçik ekranlarda tam genişlik
+              md:w-1/3       // 768px və yuxarı 3 sütun
+              lg:w-1/4       // 1024px və yuxarı 4 sütun
+              xl:w-1/5       // 1280px və yuxarı 5 sütun
+            "
           >
-            <h2 className="text-xl font-semibold text-orange-500 mb-2">
+            <img
+              src={
+                typeof customer.avatar === "object"
+                  ? URL.createObjectURL(customer.avatar)
+                  : customer.avatar || "https://via.placeholder.com/100"
+              }
+              alt={`${customer.firstName} ${customer.lastName}`}
+              className="w-28 h-28 rounded-full mb-4 object-cover border-4 border-orange-400"
+            />
+            <h2 className="text-xl font-semibold text-orange-600 mb-1 text-center">
               {customer.firstName} {customer.lastName}
             </h2>
-            <p className="text-gray-700 mb-1">
-              <span className="font-medium">Email:</span> {customer.email || "-"}
-            </p>
-            {customer.phone && (
-              <p className="text-gray-700 mb-1">
-                <span className="font-medium">Phone:</span> {customer.phone}
-              </p>
-            )}
-            <p className="text-gray-700">
-              <span className="font-medium">Address:</span> {customer.address || "-"}
+            <p className="text-gray-600 text-center text-sm">
+              <span className="font-medium">📍 Address:</span> {customer.address || "-"}
             </p>
           </div>
         ))
