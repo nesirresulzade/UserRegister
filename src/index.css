@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+/* Scrollbar tam gizlət */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;   
+}
+
+/* Animasiya */
+
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.animate-fadeSlideUp {
+    animation: fadeSlideUp 3s ease-in-out forwards;
+}
